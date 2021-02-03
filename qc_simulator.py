@@ -29,8 +29,10 @@ class QuantumCircuit():
 
         
     def __init__(self, nqubits: int) -> None:
+        if type(nqubits) != int:
+            raise TypeError(f'Number of qubits must be of type int. Given {type(nqubits)}')
         if nqubits <= 0:
-            raise ValueError(f'Number of qubits must be positive. Given {nqubits}')
+            raise ValueError(f'Number of qubits must be a positive Integer. Given {nqubits}')
         self.nqubits = nqubits
 
     def get_groundstate(self)-> np.ndarray :
