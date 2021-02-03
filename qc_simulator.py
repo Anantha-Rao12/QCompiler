@@ -29,6 +29,7 @@ class QuantumCircuit():
 
         
     def __init__(self, nqubits: int) -> None:
+        
         if type(nqubits) != int:
             raise TypeError(f'Number of qubits must be of type int. Given {type(nqubits)}')
         if nqubits <= 0:
@@ -125,6 +126,10 @@ class QuantumCircuit():
 
     def get_counts(self,statevector:np.ndarray,shots:int) -> Dict[str, int]:
         """Get Counts for given number of measurement shots"""
+        if type(shots) != int:
+            raise TypeError(f'Number of shots must be of type int. Given {type(shots)}')
+        if nqubits <= 0:
+            raise ValueError(f'Number of shots must be a positive Integer. Given {shots}')
         
         measurement_results = [self.measurement(statevector) for i in range(shots)] #get measurements for all shots
 
