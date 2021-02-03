@@ -27,11 +27,11 @@ class QuantumCircuit():
     S: np.ndarray = np.array([[1, 0], [0, 0+1.j]], dtype='complex_')
     T: np.ndarray = np.array([[1, 0], [0, np.exp(0+1.j*np.pi/4)]], dtype='complex_')
 
+        
     def __init__(self, nqubits: int) -> None:
         if nqubits <= 0:
             raise ValueError(f'Number of qubits must be positive. Given {nqubits}')
         self.nqubits = nqubits
-
 
     def get_groundstate(self)-> np.ndarray :
         """Tensor product of #nqubit systems in Zero state"""
@@ -40,11 +40,17 @@ class QuantumCircuit():
     def get_std_basis(self)-> np.ndarray :
         """Returns a list of standard basis states for a composite system of #nqubits"""
 
-        # obtain a list of all combinations of (0,1) foe given no.of qubits
+        # obtain a list of all combinations of (0,1) for given no.of qubits
         basis_states_list = list(product(['0', '1'], repeat=self.nqubits)) 
         # concat the entries in states_list to get basisvectors
         basis_states = [''.join(element) for element in basis_states_list] 
         return list(map(lambda x : '|'+str(x)+'>',basis_states)) # modify into ket vectors
+    
+    def normalize_vector(self,statevector: np.ndarray) -> np.ndarray:
+        """Return the normalized statevector"""
+        norm = np.sqrt(statevector.conj().T @ statevector)
+        normalized_vector = statevector/norm if norm != 1 else statevector
+        return normalized_vector
     
     def get_finalstate(self,
                        program:Dict,
@@ -53,6 +59,10 @@ class QuantumCircuit():
         
         if initial_state is None:
             initial_state = self.get_groundstate()
+            
+        if (initial_state.conj().T @ initial_state) != 1:
+            print('Input statevector is not normalized...\n Performing normalization')
+            initial_state = self.normalize_vector(statevector)
         
         fstate = np.copy(initial_state) # copy the initialstate vector for finalstate
         
@@ -63,12 +73,12 @@ class QuantumCircuit():
 
     
     def get_operator(self,gatename:str,target_qubits:list) -> np.ndarray:
-        """Return the matrix for a specified Q-gate, no of qubits and target_qubit"""
-
+        """Return the matrix for a specified Q-gate, with given no of qubits and target_qubit"""
         
-        single_qgates = {'I2':QuantumCircuit.I2,'X':QuantumCircuit.X,
-                         'Y':QuantumCircuit.Y,'Z':QuantumCircuit.Z,
-                         'H':QuantumCircuit.H}
+        single_qgates = {'I2': QuantumCircuit.I2,'X': QuantumCircuit.X, 
+                         'Y': QuantumCircuit.Y,'Z': QuantumCircuit.Z,
+                         'H': QuantumCircuit.H, 'S': QuantumCircuit.S, 
+                         'T': QuantumCircuit.T}
 
         if target_qubits[0] < 0 or target_qubits[0] > self.nqubits:
             raise IndexError(f'Incorrect entry for target qubit. Please try a value between 0 and {self.nqubits}')
@@ -106,13 +116,14 @@ class QuantumCircuit():
     def measurement(self,statevector:np.ndarray) -> int :
         """Perform measurement on given statevector"""
         
-        probability_dist = abs((statevector**2).real)
+        normalized_vector =  self.normalize_vector(statevector)
+        probability_dist = abs((normalized_vector.conj() * normalized_vector).real)
         return np.random.choice(range(len(statevector)),1, p=probability_dist.flatten())[0]
     
 
     def get_counts(self,statevector:np.ndarray,shots:int) -> Dict[str, int]:
         """Get Counts for given number of measurement shots"""
-
+        
         measurement_results = [self.measurement(statevector) for i in range(shots)] #get measurements for all shots
 
         counter = Counter(measurement_results)  #creates a dictionary with index of basis state and frequency
