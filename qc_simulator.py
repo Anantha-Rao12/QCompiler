@@ -1,41 +1,42 @@
 import numpy as np
 from collections import Counter
 from itertools import product
-from typing import Optional,Dict
+from typing import Optional, Dict
 
 
 class QuantumCircuit():
-    
-    """Implement a simple Quantum Circuit Compiler"""
-    
-    ### Class Variables
-    
+    """Implement a simple Quantum Circuit Compiler with 
+    Basic Single Qubit Gates and the CNOT gate"""
+
+    # Define Class Variables
+
     # Computational Basis
-    Zero : np.ndarray = np.array([[1.0],[0.0]])
-    One : np.ndarray = np.array([[0.0],[1.0]])
-    
+    Zero: np.ndarray = np.array([[1.0], [0.0]])
+    One: np.ndarray = np.array([[0.0], [1.0]])
+
     # Projection operators
-    P0 : np.ndarray = Zero @  Zero.T
-    P1 : np.ndarray = One @ One.T
+    P0: np.ndarray = Zero @  Zero.T
+    P1: np.ndarray = One @ One.T
 
     # Single Qubit gates
-    X : np.ndarray = np.array([[0,1],[1,0]],dtype = 'complex_')
-    Y : np.ndarray = np.array([[0,0-1.j],[0+1.j,0]],dtype = 'complex_')
-    Z : np.ndarray = np.array([[1,0],[0,1]],dtype = 'complex_')
-    H : np.ndarray = (1/np.sqrt(2))*np.array([[1,1],[1,-1]],dtype = 'complex_')
-    I2 : np.ndarray = np.array([[1,0],[0,1]],dtype = 'complex_')
+    X: np.ndarray = np.array([[0, 1], [1, 0]], dtype='complex_')
+    Y: np.ndarray = np.array([[0, 0-1.j], [0+1.j, 0]], dtype='complex_')
+    Z: np.ndarray = np.array([[1, 0], [0, 1]], dtype='complex_')
+    H: np.ndarray = (1/np.sqrt(2))*np.array([[1, 1], [1, -1]], dtype='complex_')
+    I2: np.ndarray = np.array([[1, 0], [0, 1]], dtype='complex_')
+    S: np.ndarray = np.array([[1, 0], [0, 0+1.j]], dtype='complex_')
+    T: np.ndarray = np.array([[1, 0], [0, np.exp(0+1.j*np.pi/4]], dtype='complex_')
 
-    def __init__(self,nqubits:int) -> None:
-        if nqubits <= 0 : 
+    def __init__(self, nqubits: int) -> None:
+        if nqubits <= 0:
             raise ValueError(f'Number of qubits must be positive. Given {nqubits}')
-            
         self.nqubits = nqubits
-           
+
+
     def get_groundstate(self)-> np.ndarray :
         """Tensor product of #nqubit systems in Zero state"""
-        
         return self.ntensor_product(*[QuantumCircuit.Zero]*self.nqubits)
-    
+
     def get_std_basis(self)-> np.ndarray :
         """Returns a list of standard basis states for a composite system of #nqubits"""
 
@@ -44,7 +45,6 @@ class QuantumCircuit():
         # concat the entries in states_list to get basisvectors
         basis_states = [''.join(element) for element in basis_states_list] 
         return list(map(lambda x : '|'+str(x)+'>',basis_states)) # modify into ket vectors
-
     
     def get_finalstate(self,
                        program:Dict,
@@ -101,10 +101,7 @@ class QuantumCircuit():
             result = QuantumCircuit.ntensor_product(*multiqubitgate_list1) + QuantumCircuit.ntensor_product(*multiqubitgate_list2) 
                 
         return result
-            
-            
-            
- 
+
         
     def measurement(self,statevector:np.ndarray) -> int :
         """Perform measurement on given statevector"""
