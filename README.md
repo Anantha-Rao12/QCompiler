@@ -15,4 +15,4 @@ Thank you and have a wonderful day!
 
 <br><br>
 
-For clarifications and queries -- email: [Anantha Rao](mailto:anantha.rao@students.iiserpune.ac.in?subject=[QOSF-cohort3-gtihubrepo])
+For clarifications and queries -- email: [Anantha Rao](mailto:anantha.rao@students.iiserpune.ac.in?subject=[QOSF-cohort3-githubrepo])
