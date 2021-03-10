@@ -1,6 +1,6 @@
-# QOSF Cohort 3 Screening Tasks
+# Basic Quantum Compiler
 
-- I have implemented a basic Quantum Circuit Simulator (task 3) as mentioned on the [screening taks](https://docs.google.com/document/d/1944peQceYXhRA4Usp6ub_l2ms1xj8mXgseCgWpyBZOA/edit) for the QOSF program. 
+- I have implemented a basic Quantum Circuit Simulator as part of the [screening taks](https://docs.google.com/document/d/1944peQceYXhRA4Usp6ub_l2ms1xj8mXgseCgWpyBZOA/edit) for the QOSF program. 
 - The jupyter notebook `3_QC_simulator.ipynb` contains basic implementations and syntax based on the `QuantumCircuit()` class described in `qc_simulator.py`. 
 - I have implemented : 
   - The basic single-qubit gates (X,Y,Z,I,H,S,T) and the CNOT gate 
